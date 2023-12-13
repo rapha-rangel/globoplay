@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
-import db from './components/db.json'
 import SearchBar from './components/searchBar';
 import Keyboard from './components/keyboard';
 import CarouselPage from './components/carouselPage';
+import axios from 'axios';
 
 function App() {
   
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef(null);
   const [listTitulos, setListTitulos] =useState([]);
-  const [listVideos, setListVideos] =useState([]);
+  const [listSeries, setListSeries] =useState([]);
   const [titlesDisplay, setTitlesDisplay] = useState(false);
   const [haveList, setHaveList]=useState(false);
   const [carouselIconTitles, setCarouselIconTitles] =useState(true);
-  const [carouselIconVideos, setCarouselIconVideos] =useState(true);
+  const [carouselIconSeries, setCarouselIconSeries] =useState(true);
 
 
   const handleTargetKeyboard =(e)=>{
@@ -32,37 +32,48 @@ function App() {
   }
 
   useEffect(()=>{
-    const resultsTitles = db.titles.filter((resp) => 
-    resp.title.toLowerCase().includes(inputRef.current.value)
-    )
-    const resultsVideos = db.videos.filter((resp) => 
-    resp.title.toLowerCase().includes(inputRef.current.value)
-    )
-    if(inputRef.current.value.length ===0){
-      console.log(inputRef.current.value)
-      setListTitulos("");
-      setListVideos("");
-      setTitlesDisplay(false)
-    }else{
-      setTitlesDisplay(true)
-      setListTitulos(resultsTitles)
-      setListVideos(resultsVideos)
+    const getAll =async ()=>{
+      const responseTitles = await axios.get(`https://www.omdbapi.com/?s=${inputRef.current.value}&plot=short&type=movie&apikey=9db42209`)
+      var resultsTitles =[]
+      if(responseTitles.data.Search === undefined){
+        resultsTitles= []
+        }else{
+          resultsTitles = responseTitles.data.Search
+        }
+        const responseSeries = await axios.get(`https://www.omdbapi.com/?s=${inputRef.current.value}&plot=short&type=series&apikey=9db42209`)
+        console.log(responseSeries.data.Search)
+        var resultsSeries =[]
+        if(responseSeries.data.Search === undefined){
+          resultsSeries= []
+          }else{
+            resultsSeries = responseSeries.data.Search
+          }
+      if(inputRef.current.value.length ===0){
+        setListTitulos("");
+        setListSeries("");
+        setTitlesDisplay(false)
+      }else{
+        setTitlesDisplay(true)
+        setListTitulos(resultsTitles)
+        setListSeries(resultsSeries)
+      }
+      if(resultsTitles.length < 1 ){
+        setHaveList(false)
+      }else{
+        setHaveList(true)
+      }
+      if(resultsTitles.length >5){
+        setCarouselIconTitles(true)
+      } else {
+        setCarouselIconTitles(false)
+      }
+      if(resultsSeries.length >5){
+        setCarouselIconSeries(true)
+      } else {
+        setCarouselIconSeries(false)
+      }
     }
-    if(resultsTitles.length < 1 ){
-      setHaveList(false)
-    }else{
-      setHaveList(true)
-    }
-    if(resultsTitles.length >5){
-      setCarouselIconTitles(true)
-    } else {
-      setCarouselIconTitles(false)
-    }
-    if(resultsVideos.length >5){
-      setCarouselIconVideos(true)
-    } else {
-      setCarouselIconVideos(false)
-    }
+    getAll();
   },[inputValue])
 
   return (
@@ -73,11 +84,11 @@ function App() {
         handleTargetKeyboard={handleTargetKeyboard}/>
       <CarouselPage
         listTitulos={listTitulos}
-        listVideos={listVideos}
+        listSeries={listSeries}
         titlesDisplay={titlesDisplay}
         haveList={haveList}
         carouselIconTitles={carouselIconTitles}
-        carouselIconVideos={carouselIconVideos}/>
+        carouselIconSeries={carouselIconSeries}/>
     </div>
   );
 }

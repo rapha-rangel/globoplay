@@ -5,8 +5,8 @@ import Carousel from '../carousel';
                       titlesDisplay,
                       haveList, 
                       carouselIconTitles,
-                      carouselIconVideos,
-                      listVideos})=> {
+                      carouselIconSeries,
+                      listSeries})=> {
 
   return (
     <div className='w-[57.5%] h-screen bg-gray-950'>
@@ -16,11 +16,11 @@ import Carousel from '../carousel';
             name={"titulos"}
             listTitulos={listTitulos}
             haveList={haveList}
-            carouselIconTitles={carouselIconTitles}
-            carouselIconVideos={carouselIconVideos}/>
+            carouselIconTitles={carouselIconTitles}/>
           <Carousel
             name={"videos"}
-            listVideos={listVideos}/>
+            listSeries={listSeries}
+            carouselIconSeries={carouselIconSeries}/>
         </div>
       : 
         <div className='absolute top-1/2 translate-x-1/2 -translate-y-1/2 ' >

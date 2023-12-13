@@ -1,21 +1,22 @@
 import React, { useEffect, useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faPlay} from '@fortawesome/free-solid-svg-icons';
+import semImagem from '../../assets/semImagem.png'
 
 const Carousel=({name, 
                 listTitulos, 
                 haveList, 
                 carouselIconTitles,
-                carouselIconVideos, 
-                listVideos})=> {
+                carouselIconSeries, 
+                listSeries})=> {
 
   const [currentTitle, setCurrentTitle] = useState(0);
-  const [currentVideo, setCurrentVideo] = useState(0);
+  const [currentSerie, setCurrentSerie] = useState(0);
   
   useEffect(()=>{
     setCurrentTitle(0);
-    setCurrentVideo(0)
-  },[listTitulos, listVideos])
+    setCurrentSerie(0)
+  },[listTitulos, listSeries])
 
   const handleArrowLeft =(e)=>{
 		e.preventDefault();
@@ -26,10 +27,10 @@ const Carousel=({name,
         setCurrentTitle(currentTitle-1)
       }
     }else{
-      if(currentVideo === 0){
-        setCurrentVideo(0)
+      if(currentSerie === 0){
+        setCurrentSerie(0)
       }else{
-        setCurrentVideo(currentVideo-1)
+        setCurrentSerie(currentSerie-1)
       }
     }
 	}
@@ -37,16 +38,16 @@ const Carousel=({name,
   const handleArrowRight =(e)=>{
 		e.preventDefault();
     if(name ==="titulos"){
-      if(currentTitle >= listTitulos.length-5){
-        setCurrentTitle(listTitulos.length-5)
+      if(currentTitle >= listTitulos.length-6){
+        setCurrentTitle(listTitulos.length-6)
       }else{
         setCurrentTitle(currentTitle+1)
       }
     } else{
-      if(currentVideo >= listVideos.length -3){
-        setCurrentVideo(listVideos.length -3)
+      if(currentSerie >= listSeries.length -3){
+        setCurrentSerie(listSeries.length -3)
       }else{
-        setCurrentVideo(currentVideo+1)
+        setCurrentSerie(currentSerie+1)
       }
     }
 		
@@ -78,11 +79,16 @@ const Carousel=({name,
               <p className='pl-10 h-[12.9rem] pt-2 text-lg text-gray-300 font-light'>Não foram encontrados titulos</p>
             :
               <ul className='flex pl-10 transition ease-in-out duration-300 '
-                style={{transform:`translateX(-${currentTitle*18.5}%`}}>
+                style={{transform:`translateX(-${currentTitle*15}%`}}>
                   {listTitulos.map(title=>{
                     return(
-                      <li className='mr-4 transition ease-in-out duration-500 hover:outline hover:outline-4 hover:outline-white my-2 opacity-50 hover:opacity-100  cursor-pointer'>
-                        <img className='max-w-[8rem]' src={title.url} alt="title_image"/>
+                      <li className='mr-4 transition ease-in-out duration-500  my-2 opacity-50 hover:opacity-100  cursor-pointer'>
+                        {title.Poster === 'N/A'
+                          ?
+                          <img className='max-w-[7rem] min-w-[7rem] h-[12rem] hover:outline hover:outline-4 hover:outline-white' src={semImagem} alt="title_image"/>
+                          :
+                          <img className='max-w-[7rem] min-w-[7rem] h-[12rem] hover:outline hover:outline-4 hover:outline-white' src={title.Poster} alt="title_image"/>
+                        }
                       </li>
                     )
                   })}
@@ -91,7 +97,7 @@ const Carousel=({name,
           </>
         :
         <>
-        {carouselIconVideos ?
+        {carouselIconSeries ?
           <>
             <FontAwesomeIcon 
               className='transition ease-in-out duration-500 absolute z-10 top-[50%] ml-2 text-4xl text-white cursor-pointer opacity-0 group-hover/item:block group-hover/item:opacity-100' 
@@ -104,16 +110,20 @@ const Carousel=({name,
           </>
           : ""}
           <ul className='flex pl-10 transition ease-in-out duration-300'
-            // style={{transform:`translateX(-${currentVideo*18.5}%`}}
-            >
-            {listVideos.map(video=>{
+            style={{transform:`translateX(-${currentSerie*22.5}%`}}>
+            {listSeries.map(video=>{
               return(
                 <li className='group transition ease-in-out duration-500 group/list mr-4 hover:bg-white mt-2 pb-8 rounded-b-lg opacity-70 hover:opacity-100  cursor-pointer'>
                   <div className='relative'>
-                    <img className='min-w-[12rem] h-28' src={video.url} alt="title_image"/>
+                    {video.Poster ==='N/A'
+                      ?
+                      <img className='min-w-[12rem] max-w-[12rem] h-28' src={semImagem} alt="title_image"/>
+                      :
+                      <img className='min-w-[12rem] max-w-[12rem] h-28' src={video.Poster} alt="title_image"/>
+                    }
                     <FontAwesomeIcon className='absolute hidden group-hover:block animate-[sideBarAnimation_0.5s_ease-in-out] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-4xl' icon={faPlay} />
                   </div>
-                  <p className='px-2 pt-2 font-semibold text-white group-hover/list:text-gray-700'>{video.title}</p>
+                  <p className='px-2 pt-2 font-semibold text-white group-hover/list:text-gray-700 truncate max-w-[12rem]'>{video.Title}</p>
                 </li>
               )
             })}
